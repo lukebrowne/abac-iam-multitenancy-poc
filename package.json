@@ -1,0 +1,9 @@
+{
+  "name": "abac-iam-multitenancy-poc",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/lukebrowne/abac-iam-multitenancy-poc",
+  "author": "Luke Browne <luke.browne@wealthwizards.com>",
+  "license": "MIT",
+  "private": true
+}
