@@ -1,0 +1,36 @@
+service: abac-iam-multitenancy-poc
+
+frameworkVersion: '3'
+
+plugins:
+  - serverless-esbuild
+  - serverless-service-config-plugin
+
+provider:
+  name: aws
+  runtime: nodejs16.x
+  region: eu-west-1
+  vpc:
+    securityGroupIds:
+      - ${consul:global/config.json/${opt:stage}/DEFAULT_LAMBDA_SECURITY_GROUP}
+    subnetIds:
+      - ${consul:global/config.json/${opt:stage}/SUBNET_A}
+      - ${consul:global/config.json/${opt:stage}/SUBNET_B}
+      - ${consul:global/config.json/${opt:stage}/SUBNET_C}
+  deploymentBucket:
+    name: s3-lambda-deployment-${self:custom.accountName}-${self:custom.accountId}
+
+functions:
+  hello:
+    handler: src/handler.hello
+
+custom:
+  accountId: ${consul:global/config.json/${opt:stage}/AWS_ACCOUNT_ID}
+  accountName: ${consul:global/config.json/${opt:stage}/AWS_ACCOUNT_NAME}
+  service_config_plugin:
+    consulAddr: https://consul.wizards.engineering
+    consulPrefix: app_config_vars/
+    vaultAddr: https://vault.wizards.engineering
+    kmsKeyConsulPath: global/config.json/${opt:stage}/KMS_KEY_ID
+    localEnvVarStages:
+      - dev-local

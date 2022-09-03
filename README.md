@@ -11,5 +11,5 @@ to set a session tag in AWS STS, which is then injected into an IAM role that's 
 dynamically by a Lambda function. The approach is outlined really well in the blog post
 above.
 
-I'm working on this to propose a new approach for work (Wealth Wizards), but saw no reason
+I'm working on this to propose a new approach for work ([Wealth Wizards](https://github.com/WealthWizardsEngineering)), but saw no reason
 to not work in public on this.
