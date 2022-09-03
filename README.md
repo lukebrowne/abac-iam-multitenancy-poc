@@ -13,3 +13,17 @@ above.
 
 I'm working on this to propose a new approach for work ([Wealth Wizards](https://github.com/WealthWizardsEngineering)), but saw no reason
 to not work in public on this.
+
+I would like the output of this to be a proposal on how we could approach multitenancy.
+To the end of making the platform easy to adopt, we have an ambition of the platform
+being as easy to signing up for a Netflix subscription.
+
+## Plan
+
+- [ ] Try setting STS session tag based on JWT
+- [ ] Try using session tag in a parameterised IAM policy
+- [ ] Try to use seperate DynamoDB tables
+- [ ] Try using a unified DynamoDB table, with IAM policy containing partition key restrictions
+- [ ] Evaluate options to ensure we fail safe, or ways to have assurance we won't fail\*
+
+\* Goal is to not be reliant on well behaved code to respect boundaries, or have a automated assurance
