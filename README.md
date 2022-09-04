@@ -20,8 +20,8 @@ being as easy to signing up for a Netflix subscription.
 
 ## Plan
 
-- [ ] Try setting STS session tag based on JWT
-- [ ] Try using session tag in a parameterised IAM policy
+- [x] Try setting STS session tag based on JWT
+- [x] Try using session tag in a parameterised IAM policy
 - [ ] Try to use seperate DynamoDB tables
 - [ ] Try using a unified DynamoDB table, with IAM policy containing partition key restrictions
 - [ ] Evaluate options to ensure we fail safe, or ways to have assurance we won't fail\*

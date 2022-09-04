@@ -1,5 +1,78 @@
 service: abac-iam-multitenancy-poc
 
+functions:
+  # Lambda + API Gateway to save some advice, that will be actioned later
+  saveAdvice:
+    dependsOn:
+      - AdviceTable
+    handler: src/handlers/saveAdvice.default
+    events:
+      - http:
+          path: /v1/advice
+          method: post
+          cors: true
+    environment:
+      REGION: ${self:provider.region}
+      # Arn is the only exposed variable, so some schenanigans to get the table
+      ADVICE_TABLE: !Select [1, !Split ['/', !GetAtt AdviceTable.Arn]]
+      ADVICE_TABLE_ACCESS_ROLE_ARN: !GetAtt PutAdviceRole.Arn
+
+resources:
+  Resources:
+    # DynamoDB table to be used to store advice that's been saved
+    AdviceTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:service}-${opt:stage}-advice
+        AttributeDefinitions:
+          - AttributeName: PK
+            AttributeType: S
+          - AttributeName: SK
+            AttributeType: S
+        KeySchema:
+          - AttributeName: PK
+            KeyType: HASH
+          - AttributeName: SK
+            KeyType: RANGE
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+
+    PutAdviceRole:
+      Type: AWS::IAM::Role
+      Properties:
+        RoleName: ${self:service}-${opt:stage}-PutAdviceRole
+        AssumeRolePolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+            - Sid: AssumeRole
+              Effect: Allow
+              Principal:
+                AWS: arn:aws:iam::963507507145:role/abac-iam-multitenancy-poc-green-eu-west-1-lambdaRole
+              Action: sts:AssumeRole
+            - Sid: TagTenant
+              Effect: Allow
+              Principal:
+                AWS: arn:aws:iam::963507507145:role/abac-iam-multitenancy-poc-green-eu-west-1-lambdaRole
+              Action: sts:TagSession
+              Condition:
+                StringLike:
+                  'aws:RequestTag/Tenant': '*'
+        Policies:
+          - PolicyName: PutAdvicePolicy
+            PolicyDocument:
+              Version: '2012-10-17'
+              Statement:
+                - Sid: PutTenantPartition
+                  Effect: Allow # note that these rights are given in the default policy and are required if you want logs out of your lambda(s)
+                  Action:
+                    - dynamodb:PutItem
+                  Resource: !GetAtt AdviceTable.Arn
+                  Condition:
+                    'ForAllValues:StringLike':
+                      'dynamodb:LeadingKeys':
+                        - "Tenant:\\${aws:PrincipalTag/Tenant}|*"
+
 frameworkVersion: '3'
 
 plugins:
@@ -19,10 +92,6 @@ provider:
       - ${consul:global/config.json/${opt:stage}/SUBNET_C}
   deploymentBucket:
     name: s3-lambda-deployment-${self:custom.accountName}-${self:custom.accountId}
-
-functions:
-  hello:
-    handler: src/handler.hello
 
 custom:
   accountId: ${consul:global/config.json/${opt:stage}/AWS_ACCOUNT_ID}
