@@ -16,7 +16,7 @@ to not work in public on this.
 
 I would like the output of this to be a proposal on how we could approach multitenancy.
 To the end of making the platform easy to adopt, we have an ambition of the platform
-being as easy to signing up for a Netflix subscription.
+being as easy to adopt as signing up for a Netflix subscription.
 
 ## Plan
 
