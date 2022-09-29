@@ -6,13 +6,13 @@ interface Advice {
   monthlyPensionContributions: number;
 }
 
-export const createPutAdvice =
-  (tenant: string, creds: STS.Credentials) => async (advice: Advice) => {
+export const putAdvice =
+  async (tenant: string, advice: Advice) => {
     const client = new DynamoDB.DocumentClient({
       region: env.REGION,
-      accessKeyId: creds.AccessKeyId,
-      secretAccessKey: creds.SecretAccessKey,
-      sessionToken: creds.SessionToken,
+      // accessKeyId: creds.AccessKeyId,
+      // secretAccessKey: creds.SecretAccessKey,
+      // sessionToken: creds.SessionToken,
     });
 
     const date = new Date();

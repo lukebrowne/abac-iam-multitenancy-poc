@@ -1,24 +1,25 @@
 import middy from '@middy/core';
 import validator from '@middy/validator';
 import bodyParser from '@middy/http-json-body-parser';
+import headerNormaliser from '@middy/http-header-normalizer';
 import responseSerialiser from '@middy/http-response-serializer';
 import errorHandler from '@middy/http-error-handler';
 import { serializers } from '../serializers';
 import type { Event } from '../types';
-import { createPutAdvice } from '../helpers/putAdvice';
-import { assumeRole } from '../helpers/assumeRole';
-import { STS } from 'aws-sdk';
+import { putAdvice } from '../helpers/putAdvice';
+import { iamMultiTenancy } from '../helpers/iamMultiTenancy';
+import { env } from '../helpers/env';
 
 interface Body {
   monthlyPensionContributions: number;
 }
 
 async function saveAdvice(event: Event<Body>) {
-  const creds = await assumeRole('turo');
+  const tenant = event.headers?.['x-tenant-id'] as string;
 
-  const putAdvice = createPutAdvice('turo', creds);
+  const advice = await putAdvice(tenant, event.body);
 
-  const advice = await putAdvice(event.body);
+  console.log('Put advice');
 
   return {
     statusCode: 200,
@@ -43,6 +44,8 @@ const schema = {
 };
 
 export default middy(saveAdvice)
+  .use(headerNormaliser())
+  .use(iamMultiTenancy(env.ADVICE_TABLE_ACCESS_ROLE_ARN))
   .use(bodyParser())
   .use(validator(schema))
   .use(responseSerialiser(serializers))

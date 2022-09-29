@@ -10,6 +10,7 @@
   },
   "devDependencies": {
     "@types/aws-lambda": "^8.10.102",
+    "@types/http-errors": "^1.8.2",
     "esbuild": "^0.15.6",
     "serverless": "^3.22.0",
     "serverless-esbuild": "^1.32.8",
@@ -18,12 +19,15 @@
   "dependencies": {
     "@middy/core": "^3.3.0",
     "@middy/http-error-handler": "^3.3.0",
+    "@middy/http-header-normalizer": "^3.4.0",
     "@middy/http-json-body-parser": "^3.3.0",
     "@middy/http-response-serializer": "^3.3.0",
     "@middy/validator": "^3.3.0",
     "aws-lambda": "^1.0.7",
     "aws-sdk": "^2.1209.0",
     "envalid": "^7.3.1",
+    "http-errors": "^2.0.0",
+    "jsonwebtoken": "^8.5.1",
     "ulid": "^2.3.0"
   }
 }
