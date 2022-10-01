@@ -23,7 +23,7 @@ being as easy to adopt as signing up for a Netflix subscription.
 - [x] Try setting STS session tag based on JWT
 - [x] Try using session tag in a parameterised IAM policy
 - [ ] Try to use seperate DynamoDB tables
-- [ ] Try using a unified DynamoDB table, with IAM policy containing partition key restrictions
+- [x] Try using a unified DynamoDB table, with IAM policy containing partition key restrictions
 - [ ] Evaluate options to ensure we fail safe, or ways to have assurance we won't fail\*
 
 \* Goal is to not be reliant on well behaved code to respect boundaries, or have a automated assurance
