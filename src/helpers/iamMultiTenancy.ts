@@ -29,5 +29,8 @@ export const iamMultiTenancy = (roleArn: string): MiddlewareObj<Event<unknown>> 
   },
   after: async () => {
     AWS.config.update({ credentials: null });
-  }
+  },
+  onError: async () => {
+    AWS.config.update({ credentials: null });
+  } 
 });
